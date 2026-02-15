@@ -142,17 +142,17 @@ namespace FpsHorrorKit
 
             higlightObject.SetActive(false);
             higlightObject = defaultHighlightObj;
-            interactTextUI.text = defaultInteractText;
+            //interactTextUI.text = defaultInteractText;
         }
         public void ChangeInteractText(string interactText)
         {
-            interactTextUI.text = interactText;
-            higlightObject = interactTextUI.gameObject;
+            //interactTextUI.text = interactText;
+            //higlightObject = interactTextUI.gameObject;
         }
         public void ChangeInteractImage(Sprite interactImage)
         {
-            interactImageUI.sprite = interactImage;
-            higlightObject = interactImageUI.gameObject;
+            //interactImageUI.sprite = interactImage;
+            //higlightObject = interactImageUI.gameObject;
         }
     }
 }

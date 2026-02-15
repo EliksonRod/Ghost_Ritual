@@ -2,11 +2,11 @@
 using UnityEngine;
 using UnityEngine.Windows;
 using UnityEngine.UI;
-using FpsHorrorKit;
 
 public class InteractionManager : MonoBehaviour
 {
     public static InteractionManager Instance { get; private set; }
+
     [Header("Interaction Settings")]
     public float interactRange = 2;
     public bool sendRaycast;
@@ -24,7 +24,7 @@ public class InteractionManager : MonoBehaviour
 
     public bool showHighlight;
 
-    private FpsAssetsInputs _input;
+    private InputForPlayer _input;
     private IInteractable currentInteractable;
 
     private GameObject defaultHighlightObj;
@@ -46,7 +46,7 @@ public class InteractionManager : MonoBehaviour
 
     private void Start()
     {
-        _input = FindAnyObjectByType<FpsAssetsInputs>();
+        _input = FindAnyObjectByType<InputForPlayer>();
 
         showHighlight = true;
         sendRaycast = true;
