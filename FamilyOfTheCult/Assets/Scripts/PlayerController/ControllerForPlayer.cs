@@ -40,9 +40,12 @@ public class ControllerForPlayer : MonoBehaviour
     [Header("Interact Settings")]
     public bool isInteracting = false;
 
+    [Header("UV/Flashlight Settings")]
+    [SerializeField] GameObject flashlightObj;
+    [SerializeField] GameObject blacklightObj;
+
     private CharacterController characterController;
     private InputForPlayer _input;
-
     private Vector3 velocity;
     private bool isGrounded;
     private float jumpCooldownTimer;
