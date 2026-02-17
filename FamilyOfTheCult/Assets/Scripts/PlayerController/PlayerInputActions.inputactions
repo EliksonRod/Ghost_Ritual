@@ -66,13 +66,22 @@
                     "id": "af9406e6-c504-4818-825a-276de831eb21",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": "Press(behavior=2)",
+                    "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "UseBlacklight",
+                    "name": "TurnOnBlacklight",
                     "type": "Button",
                     "id": "6a353f24-639e-4716-949c-69927ee894c9",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "TurnOffBlacklight",
+                    "type": "Button",
+                    "id": "adc9301c-fcc0-4a94-aba8-dcb3974b6621",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "Press(behavior=2)",
@@ -208,7 +217,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard & Mouse",
-                    "action": "UseBlacklight",
+                    "action": "TurnOnBlacklight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5cf75a3c-6a7f-4da7-a360-06769cc50e03",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard & Mouse",
+                    "action": "TurnOffBlacklight",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

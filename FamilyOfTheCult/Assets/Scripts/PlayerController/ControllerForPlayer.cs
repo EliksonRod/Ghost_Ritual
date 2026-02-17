@@ -1,31 +1,36 @@
-﻿using UnityEngine;
+﻿using Unity.Cinemachine;
+using UnityEngine;
 using UnityEngine.InputSystem;
-using Unity.Cinemachine;
+using DG.Tweening;
+using Unity.VisualScripting;
 
 //[RequireComponent(typeof(CharacterController))]
 public class ControllerForPlayer : MonoBehaviour
 {
+    public static ControllerForPlayer Instance { get; private set; }
+
     [Header("Movement Settings")]
-    public float walkSpeed = 4.0f;
-    public float sprintSpeed = 7.0f;
-    public float rotationSpeed = 1.0f;
-    public float accelerationRate = 10.0f;
-    public float decelerationRate = 10f;
+    [SerializeField] float walkSpeed = 4.0f;
+    [SerializeField] float sprintSpeed = 7.0f;
+    float rotationSpeed = 1.0f;
+    float accelerationRate = 10.0f;
+    float decelerationRate = 10f;
 
     [Header("Jump Settings")]
-    public float jumpHeight = 2f;
-    public float gravity = -20f;
-    public float jumpCooldown = 0.2f;
+    [SerializeField] float jumpHeight = 2f;
+    [SerializeField] float gravity = -20f;
+    float jumpCooldown = 0.2f;
 
     [Header("Grounded Settings")]
-    public float groundedOffset = .85f;
-    public float groundedRadius = 0.3f;
-    public LayerMask groundLayers;
+    [SerializeField] float groundedOffset = .85f;
+    [SerializeField] float groundedRadius = 0.3f;
+    [SerializeField] LayerMask groundLayers;
 
     [Header("Camera Settings")]
     public CinemachineCamera virtualCamera;
-    public float maxCameraPitch = 70f;
-    public float minCameraPitch = -70f;
+    [HideInInspector] public float originalFov;
+    [SerializeField] float maxCameraPitch = 70f;
+    [SerializeField] float minCameraPitch = -70f;
 
     [Header("Headbob Settings")]
     public CinemachineBasicMultiChannelPerlin headBob;
@@ -40,48 +45,68 @@ public class ControllerForPlayer : MonoBehaviour
     [Header("Interact Settings")]
     public bool isInteracting = false;
 
-    [Header("UV/Flashlight Settings")]
-    [SerializeField] GameObject flashlightObj;
-    [SerializeField] GameObject blacklightObj;
+    [Header("Character Input Values")]
+    [HideInInspector] public Vector2 move;
+    [HideInInspector] public Vector2 look;
+    [HideInInspector] public bool sprint;
 
     private CharacterController characterController;
-    private InputForPlayer _input;
     private Vector3 velocity;
     private bool isGrounded;
     private float jumpCooldownTimer;
     private float cameraPitch;
 
-    private void Awake()
+    void Awake()
     {
         characterController = GetComponent<CharacterController>();
         var playerInput = GetComponent<PlayerInput>();
-        _input = GetComponent<InputForPlayer>();
+        Instance = this;
     }
 
-    private void Start()
+    void Start()
     {
         if (virtualCamera == null)
         {
             Debug.LogError("Cinemachine Virtual Camera is not assigned.");
         }
+        originalFov = virtualCamera.Lens.FieldOfView;
+        //currentFov = Mathf.Clamp(currentFov, (originalFov * (60f / 100f)), originalFov);
     }
 
-    private void Update()
+    void Update()
     {
         HandleMovement();
         HandleGravity();
-        HandleJumping();
         GroundedCheck();
     }
-    private void LateUpdate()
+
+    public void Look(InputAction.CallbackContext context)
     {
-        HandleRotation();
+        //if (canUseInput == false) return;
+        look = context.ReadValue<Vector2>();
+        //if (isInteracting) { return; }
+
+        Vector2 lookInput = look;
+        cameraPitch += lookInput.y * rotationSpeed;
+        cameraPitch = Mathf.Clamp(cameraPitch, minCameraPitch, maxCameraPitch);
+
+        virtualCamera.transform.localEulerAngles = new Vector3(cameraPitch, 0, 0);
+        transform.Rotate(Vector3.up * lookInput.x * rotationSpeed);
     }
-    private void HandleMovement()
+    public void Move(InputAction.CallbackContext context)
+    {
+        move = context.ReadValue<Vector2>();
+    }
+
+    public void Sprint(InputAction.CallbackContext context)
+    {
+        sprint = context.ReadValueAsButton();
+    }
+    void HandleMovement()
     {
         if (isInteracting)
         {
-            _input.move = Vector2.zero;
+            move = Vector2.zero;
             velocity = Vector3.zero;
 
             headBob.AmplitudeGain = idleBobAmp;
@@ -91,10 +116,10 @@ public class ControllerForPlayer : MonoBehaviour
 
         HeadBob();
 
-        Vector2 input = _input.move;
+        Vector2 input = move;
         Vector3 moveDirection = transform.right * input.x + transform.forward * input.y;
 
-        float targetSpeed = _input.sprint ? sprintSpeed : walkSpeed;
+        float targetSpeed = sprint ? sprintSpeed : walkSpeed;
 
         if (moveDirection != Vector3.zero)
         {
@@ -110,25 +135,24 @@ public class ControllerForPlayer : MonoBehaviour
         characterController.Move(new Vector3(velocity.x, 0, velocity.z) * Time.deltaTime);
     }
 
-    private void HandleRotation()
+    public void HandleRotation()
     {
         if (isInteracting) { return; }
 
-        Vector2 lookInput = _input.look;
+        Vector2 lookInput = look;
         cameraPitch += lookInput.y * rotationSpeed;
         cameraPitch = Mathf.Clamp(cameraPitch, minCameraPitch, maxCameraPitch);
 
         virtualCamera.transform.localEulerAngles = new Vector3(cameraPitch, 0, 0);
         transform.Rotate(Vector3.up * lookInput.x * rotationSpeed);
     }
-    private void GroundedCheck()
+    void GroundedCheck()
     {
-        // set sphere position, with offset
         Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - groundedOffset, transform.position.z);
         isGrounded = Physics.CheckSphere(spherePosition, groundedRadius, groundLayers, QueryTriggerInteraction.Ignore);
     }
 
-    private void HandleGravity()
+    void HandleGravity()
     {
         if (isGrounded && velocity.y < 0)
         {
@@ -138,37 +162,36 @@ public class ControllerForPlayer : MonoBehaviour
         characterController.Move(Vector3.up * velocity.y * Time.deltaTime);
     }
 
-    private void HandleJumping()
+    public void HandleJumping(InputAction.CallbackContext context)
     {
-        if (jumpCooldownTimer > 0)
+        if (isGrounded && context.performed)
         {
-            jumpCooldownTimer -= Time.deltaTime;
-        }
-
-        if (isGrounded)
-        {
-            if (_input.jump && jumpCooldownTimer <= 0)
-            {
-                velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-                jumpCooldownTimer = jumpCooldown;
-            }
-        }
-        else
-        {
-            _input.jump = false;
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            jumpCooldownTimer = jumpCooldown;
         }
     }
 
-    private void HeadBob()
+    public void ChangeFov(float fieldOfView)
     {
-        float moveMagnitude = _input.move.magnitude; // Hareket miktarını hesapla
-        float targetAmp = moveMagnitude > 0 ? (_input.sprint ? sprintBobAmp : walkBobAmp) : idleBobAmp;
-        float targetFreq = moveMagnitude > 0 ? (_input.sprint ? sprintBobFreq : walkBobFreq) : idleBobFreq;
+        virtualCamera.Lens.FieldOfView = Mathf.Lerp(virtualCamera.Lens.FieldOfView, fieldOfView, Time.deltaTime * 4);
+        //virtualCamera.Lens.FieldOfView.CompareTo(fieldOfView);
+    }
+
+    public void ResetFov()
+    {
+        virtualCamera.Lens.FieldOfView = Mathf.Lerp(virtualCamera.Lens.FieldOfView, originalFov, Time.deltaTime * 4);
+        //virtualCamera.Lens.FieldOfView = originalFov;
+    }
+    void HeadBob()
+    {
+        float moveMagnitude = move.magnitude;
+        float targetAmp = moveMagnitude > 0 ? (sprint ? sprintBobAmp : walkBobAmp) : idleBobAmp;
+        float targetFreq = moveMagnitude > 0 ? (sprint ? sprintBobFreq : walkBobFreq) : idleBobFreq;
 
         headBob.AmplitudeGain = Mathf.Lerp(headBob.AmplitudeGain, targetAmp, Time.deltaTime * headBobAcceleration);
         headBob.FrequencyGain = Mathf.Lerp(headBob.FrequencyGain, targetFreq, Time.deltaTime * headBobAcceleration);
     }
-    private void OnDrawGizmosSelected()
+    void OnDrawGizmosSelected()
     {
         Color transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);
         Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.35f);
@@ -176,7 +199,6 @@ public class ControllerForPlayer : MonoBehaviour
         if (isGrounded) Gizmos.color = transparentGreen;
         else Gizmos.color = transparentRed;
 
-        // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
         Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - groundedOffset, transform.position.z), groundedRadius);
     }
 }
