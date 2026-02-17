@@ -1,7 +1,6 @@
 ﻿using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using DG.Tweening;
 using Unity.VisualScripting;
 
 //[RequireComponent(typeof(CharacterController))]
