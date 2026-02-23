@@ -27,7 +27,7 @@ public class DevilController : MonsterController
     public override void OnAwake()
     {
         base.OnAwake();
-        NormalSpeed = Speed;
+        NormalSpeed = base.Speed;
         TimeBeforeHunt = MaxTimeBeforeHunt;
     }
 
@@ -56,10 +56,10 @@ public class DevilController : MonsterController
         switch (aggroState)
         {
             case AggresionState.Hunting:
-                Speed = HuntingSpeed;
+                base.Speed = HuntingSpeed;
                 break;
             case AggresionState.Inactive:
-                Speed = NormalSpeed;
+                base.Speed = NormalSpeed;
                 break;
         }
     }
@@ -82,7 +82,7 @@ public class DevilController : MonsterController
     {
         if (aggroState == AggresionState.Hunting)
         {
-            MonAI.speed = Speed;
+            MonAI.speed = base.Speed;
 
             // Reached destination, idle there then choose next destination randomly
             if (MonAI.remainingDistance <= MonAI.stoppingDistance + 0.1f)

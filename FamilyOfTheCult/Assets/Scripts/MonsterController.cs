@@ -13,6 +13,7 @@ public class MonsterController : MonoBehaviour
 
     //---Character Stat Variables---
     public float Speed;
+    public float SlowDownAmount = 0.5f;
 
     public float WanderRadius = 15f;
     public float AttackRange = 1.5f;
@@ -23,7 +24,9 @@ public class MonsterController : MonoBehaviour
     public float maxIdleTime = 3.5f;
 
     public float MaxBurnTime = 0;
-    public float BurnAmount;
+    float BurnAmount;
+
+    public bool isInLight = false;
 
     /// Where you spawned into the level. Used for some AI stuff
     public Vector3 StartSpot;
@@ -57,6 +60,8 @@ public class MonsterController : MonoBehaviour
         StartSpot = transform.position;
 
         targetState = BehaviorState.Roaming;
+        MonAI.speed = Speed;
+        BurnAmount = MaxBurnTime;
     }
 
     public void Start() { OnStart(); }
@@ -96,7 +101,8 @@ public class MonsterController : MonoBehaviour
     {
         OnUpdate();
         CanSeePlayer();
-        MonAI.speed = Speed;
+        //MonAI.speed = currSpeed;
+        Debug.Log(MonAI.speed);
     }
     public virtual void OnUpdate() { }
 
@@ -145,6 +151,37 @@ public class MonsterController : MonoBehaviour
             Die();
         }
     }
+
+    public virtual void Heal(float amt)
+    {
+        if (MaxBurnTime <= 0)
+            return;
+
+
+        BurnAmount += amt;
+        BurnAmount = Mathf.Clamp(BurnAmount, 0, MaxBurnTime);
+    }
+
+    public void ApplyLightExposure(float amount)
+    {
+
+        Debug.Log("Burning");
+        BurnAmount -= amount;
+        float currSpeed = Speed * SlowDownAmount;
+        MonAI.speed = currSpeed;
+        
+        //currentLightExposure = Mathf.Clamp(currentLightExposure, 0, maxLightExposure);
+
+        if (BurnAmount <= 0 ) Die();
+    }
+
+    public virtual void StopLightExposure()
+    {
+        Debug.Log("StoppedLightExposure");
+        isInLight = false;
+        MonAI.speed = Speed;
+    }
+    
 
     ///Called when you hit 0HP. Just deletes your GameObject for now.
     public virtual void Die()

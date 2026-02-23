@@ -15,10 +15,10 @@ MonoBehaviour:
   active: 1
   postExposure:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 1.2
   contrast:
     m_OverrideState: 1
-    m_Value: 28
+    m_Value: 24
   colorFilter:
     m_OverrideState: 0
     m_Value: {r: 1, g: 1, b: 1, a: 1}
@@ -27,7 +27,7 @@ MonoBehaviour:
     m_Value: 0
   saturation:
     m_OverrideState: 1
-    m_Value: -41
+    m_Value: -26
 --- !u!114 &-3663521906978659306
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -40,7 +40,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 558a8e2b6826cf840aae193990ba9f2e, type: 3}
   m_Name: ShadowsMidtonesHighlights
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   shadows:
     m_OverrideState: 1
     m_Value: {x: 0.89278924, y: 1, z: 0.9407149, w: 0}
@@ -103,11 +103,11 @@ MonoBehaviour:
   m_Name: HorrorVolume
   m_EditorClassIdentifier: 
   components:
+  - {fileID: 4654730113362266606}
   - {fileID: 4853647606614953277}
   - {fileID: -6889262624234268559}
   - {fileID: -3510905067771020820}
   - {fileID: -3663521906978659306}
-  - {fileID: 4654730113362266606}
 --- !u!114 &4654730113362266606
 MonoBehaviour:
   m_ObjectHideFlags: 3
