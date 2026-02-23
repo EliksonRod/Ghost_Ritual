@@ -9,6 +9,11 @@ public class ControllerForPlayer : MonoBehaviour
 {
     public static ControllerForPlayer Instance { get; private set; }
 
+    [Header("Player Settings")]
+    [SerializeField] int MaxHealth = 4;
+    int health;
+
+
     [Header("Movement Settings")]
     [SerializeField] float walkSpeed = 4.0f;
     [SerializeField] float sprintSpeed = 7.0f;
@@ -162,6 +167,19 @@ public class ControllerForPlayer : MonoBehaviour
 
     }
 
+    public void TakeDamage(int amt)
+    {
+        //If you don't have HP, you're immune to damage
+        if (MaxHealth <= 0) return;
+        //Lower your HP by the damage you took
+        health -= amt;
+        //If you're at 0HP or less, you die
+        if (health <= 0)
+        {
+            //Die();
+            Debug.Log("You dead");
+        }
+    }
     public void ChangeFov(float fieldOfView)
     {
         virtualCamera.Lens.FieldOfView = Mathf.Lerp(virtualCamera.Lens.FieldOfView, fieldOfView, Time.deltaTime * 4);

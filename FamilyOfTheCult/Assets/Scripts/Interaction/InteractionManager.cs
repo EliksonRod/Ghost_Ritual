@@ -106,7 +106,7 @@ public class InteractionManager : MonoBehaviour
 
                 if (canDragDoor)// && interactionUI.activeSelf)
                 {
-                    currentInteractable.Interact(); 
+                    //currentInteractable.Interact(); 
                     UnHighlight();
                     //_input.interact = false;
                 }

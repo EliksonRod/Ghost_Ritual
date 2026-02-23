@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem.Interactions;
 
 public interface IInteractable
 {
@@ -12,5 +11,4 @@ public interface IInteractable
     public void UnHighlightItem();
 
     public void CannotInteract();
-
 }
