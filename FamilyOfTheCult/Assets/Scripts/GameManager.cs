@@ -5,10 +5,13 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance { get; private set; }
+
     [SerializeField] GameObject Pause_Menu;
     [SerializeField] GameObject PlayerHUD;
     float originalTimeScale;
     [SerializeField] float slowTimeScale = 0.3f;
+    public bool LevelActivated = false;
 
     public enum GameState
     {
@@ -17,6 +20,16 @@ public class GameManager : MonoBehaviour
         InMenu,
     }
     public GameState currentGameState;
+
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
 
     public void Start()
     {

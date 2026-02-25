@@ -5,6 +5,7 @@ using UnityEngine;
 public class DevilController : MonsterController
 {
     int AggressionLevel = 0;
+    int MaxStunsRequired = 1; 
     float NormalSpeed;
 
     [Header("Hunting Settings")]
@@ -14,13 +15,14 @@ public class DevilController : MonsterController
     public float MaxHuntTime = 15f;
 
     public AggresionState aggroState;
-    // Defines what monster is currently doing
+    // Defines what monster is currently doing - can only target and kill in hunting state
     public enum AggresionState
     {
         Inactive,
         Hunting
     }
 
+    int StunsRequired;
     float TimeBeforeHunt;
     float HuntTime;
 
@@ -29,20 +31,14 @@ public class DevilController : MonsterController
         base.OnAwake();
         NormalSpeed = base.Speed;
         TimeBeforeHunt = MaxTimeBeforeHunt;
+        HuntTime = MaxHuntTime;
     }
 
     public override void OnUpdate()
     {
         base.OnUpdate();
-        if (aggroState != AggresionState.Hunting)
-        {
-            TimeBeforeHunt -= Time.deltaTime;
-            if (TimeBeforeHunt <= 0)
-            {
-                aggroState = AggresionState.Hunting;
-                TimeBeforeHunt = MaxTimeBeforeHunt;
-            }
-        }
+        HandleHuntTime();
+        
         if (Input.GetKeyUp(KeyCode.Tab))
         {
             IncreaseAggression();
@@ -60,22 +56,52 @@ public class DevilController : MonsterController
                 break;
             case AggresionState.Inactive:
                 base.Speed = NormalSpeed;
+                HuntTime = MaxHuntTime;
                 break;
+        }
+    }
+
+    public void HandleHuntTime()
+    {
+        //Countdown that starts hunt 
+        if (aggroState != AggresionState.Hunting && AggressionLevel > 0)
+        {
+            TimeBeforeHunt -= Time.deltaTime;
+            if (TimeBeforeHunt <= 0)
+            {
+                aggroState = AggresionState.Hunting;
+                TimeBeforeHunt = MaxTimeBeforeHunt;
+            }
+        }
+
+        //Countdown that end hunts
+        if (aggroState == AggresionState.Hunting)
+        {
+            HuntTime -= Time.deltaTime;
+
+            if (HuntTime <= 0)
+            {
+                aggroState = AggresionState.Inactive;
+            }
         }
     }
 
     public void IncreaseAggression()
     {
-        Debug.Log("Aggression " + AggressionLevel);
         AggressionLevel++;
-        HuntingSpeed *= HuntSpeedIncrease;
-        VisionRange += 4;
-        LoseSightRange += 6;
+        Debug.Log("Aggression " + AggressionLevel);
+
+        if (AggressionLevel > 0)
+        {
+            HuntingSpeed *= HuntSpeedIncrease;
+            VisionRange += 4;
+            LoseSightRange += 6;
+        }
     }
     public override void SeesPlayer()
     {
         if (aggroState == AggresionState.Hunting) base.SeesPlayer();
-        Debug.Log("ThisTooWorks");
+        //Debug.Log("Devil sees player");
     }
 
     public override void HandleRoaming()
@@ -91,7 +117,6 @@ public class DevilController : MonsterController
             }
         }
         else base.HandleRoaming();
-
     }
 }
 

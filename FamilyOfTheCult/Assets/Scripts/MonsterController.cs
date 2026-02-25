@@ -89,7 +89,7 @@ public class MonsterController : MonoBehaviour
                 if (CurrentlyIdle) StartCoroutine(HandleIdle());
                 break;
         }
-        Debug.Log(CurrentlyIdle);
+        //Debug.Log(CurrentlyIdle);
     }
 
     public virtual void ChangeState(BehaviorState newState)
@@ -102,7 +102,7 @@ public class MonsterController : MonoBehaviour
         OnUpdate();
         CanSeePlayer();
         //MonAI.speed = currSpeed;
-        Debug.Log(MonAI.speed);
+        //Debug.Log(MonAI.speed);
     }
     public virtual void OnUpdate() { }
 
@@ -126,7 +126,7 @@ public class MonsterController : MonoBehaviour
     }
     public virtual void SeesPlayer()
     {
-        Debug.Log("TheSee");
+        //Debug.Log("Sees player");
         ChangeState(BehaviorState.Pursuing);
     }
     public void SetRandomDestination(float radius)
