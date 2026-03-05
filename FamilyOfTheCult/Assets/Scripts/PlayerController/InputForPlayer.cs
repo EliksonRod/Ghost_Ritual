@@ -1,6 +1,7 @@
+using UnityEditor.ShaderGraph;
+using UnityEditor.Timeline;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEngine.Rendering.DebugUI;
 
 public class InputForPlayer : MonoBehaviour
 {

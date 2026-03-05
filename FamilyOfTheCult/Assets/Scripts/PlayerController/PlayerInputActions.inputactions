@@ -52,7 +52,16 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "StopInteract",
+                    "name": "HoldInteract",
+                    "type": "Button",
+                    "id": "70a2e366-8b4e-4344-a24c-eebae5d79cc8",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Hold",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "StopHoldInteract",
                     "type": "Button",
                     "id": "3e689a19-f7a7-421f-b9ab-b025efaab07c",
                     "expectedControlType": "",
@@ -190,12 +199,23 @@
                 },
                 {
                     "name": "",
-                    "id": "0b5ecbb8-4156-4b0b-9027-acf597cd3810",
-                    "path": "<Keyboard>/q",
+                    "id": "030831a2-43ae-43c3-9ebb-cd9b010041b2",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard & Mouse",
-                    "action": "StopInteract",
+                    "action": "HoldInteract",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0b5ecbb8-4156-4b0b-9027-acf597cd3810",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard & Mouse",
+                    "action": "StopHoldInteract",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
