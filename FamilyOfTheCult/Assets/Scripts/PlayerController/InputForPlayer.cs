@@ -56,7 +56,14 @@ public class InputForPlayer : MonoBehaviour
 
     public void OnInteract(InputValue value)
     {
-        InteractInput(value.isPressed);
+        if (value.isPressed)
+        {
+            interact = true;
+        }
+        else
+        {
+            interact = false;
+        }
     }
 
     public void OnStopInteract(InputValue value)

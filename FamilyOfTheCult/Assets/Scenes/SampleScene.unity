@@ -1369,7 +1369,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5821903313472493894}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 93285a17bdd7b5640a700a89730c18d5, type: 3}
   m_Name: 
@@ -1383,7 +1383,6 @@ MonoBehaviour:
   interactTextUI: {fileID: 0}
   interactImageUI: {fileID: 0}
   showHighlight: 0
-  canDragDoor: 0
 --- !u!1 &1085680986
 GameObject:
   m_ObjectHideFlags: 0
@@ -3270,6 +3269,7 @@ GameObject:
   - component: {fileID: 8011327896137069776}
   - component: {fileID: 4010050293470413088}
   - component: {fileID: 8011327896137069778}
+  - component: {fileID: 8011327896137069779}
   m_Layer: 3
   m_Name: Player (1)
   m_TagString: Player
@@ -3663,6 +3663,27 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 1.5, z: 0}
+--- !u!114 &8011327896137069779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2925717203047731294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93285a17bdd7b5640a700a89730c18d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactRange: 3
+  sendRaycast: 1
+  interactableLayers:
+    serializedVersion: 2
+    m_Bits: 128
+  interactionUI: {fileID: 0}
+  interactTextUI: {fileID: 0}
+  interactImageUI: {fileID: 0}
+  showHighlight: 0
 --- !u!114 &8875983930830689319
 MonoBehaviour:
   m_ObjectHideFlags: 0

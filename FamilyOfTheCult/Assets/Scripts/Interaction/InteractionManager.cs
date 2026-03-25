@@ -1,7 +1,8 @@
 ﻿using TMPro;
 using UnityEngine;
-using UnityEngine.Windows;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.Windows;
 
 public class InteractionManager : MonoBehaviour
 {
@@ -24,12 +25,11 @@ public class InteractionManager : MonoBehaviour
 
     public bool showHighlight;
 
-    //private InputForPlayer _input;
+    private InputForPlayer _input;
     private IInteractable currentInteractable;
 
     private GameObject defaultHighlightObj;
     private string defaultInteractText;
-    [SerializeField] private bool canDragDoor;
 
 
     private void Awake()
@@ -47,6 +47,7 @@ public class InteractionManager : MonoBehaviour
     private void Start()
     {
        // _input = FindAnyObjectByType<InputForPlayer>();
+       _input = GetComponent<InputForPlayer>();
 
         showHighlight = true;
         sendRaycast = true;
@@ -59,24 +60,6 @@ public class InteractionManager : MonoBehaviour
 
     void Update()
     {
-       /* if (currentInteractable != null)
-        {
-            if (Input.GetMouseButton(0) && canDragDoor)
-            {
-                highlightObject.SetActive(false); // Highlight'i kaldırın
-                currentInteractable.HoldInteract();
-                sendRaycast = false;
-            }
-            else if (Input.GetMouseButtonUp(0))
-            {
-                UnHighlight();
-                currentInteractable.UnHighlight();
-
-                canDragDoor = false;
-                sendRaycast = true;
-                currentInteractable = null;
-            }
-        }*/
         if (sendRaycast)
         {
             showHighlight = true;
@@ -100,13 +83,13 @@ public class InteractionManager : MonoBehaviour
             if (interactable != null)
             {
                 currentInteractable = interactable;
-                //canDragDoor = true;
+
                 Debug.Log("Interactable found: " + hit.collider.name);
                 Highlight();
 
-                if (canDragDoor)// && interactionUI.activeSelf)
+                if (_input.interact)// && interactionUI.activeSelf)
                 {
-                    //currentInteractable.Interact(); 
+                    currentInteractable.Interact(); 
                     UnHighlight();
                     //_input.interact = false;
                 }

@@ -10,7 +10,7 @@ public class InventoryUI : MonoBehaviour
 
     [Header("References")]
     [SerializeField]
-    Inventory inventory;
+    OldInventory inventory;
     [SerializeField]
     Transform uiInventoryParent;
 

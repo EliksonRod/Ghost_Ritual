@@ -1,60 +1,78 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class Inventory : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField]
-    InventoryUI ui;
-    [SerializeField]
-    AudioSource audioSource;
+    Dictionary<ItemData, InventoryItem> m_itemDictionary = new Dictionary<ItemData, InventoryItem>();
+    public static Inventory Instance { get; private set; }
+    public List<InventoryItem> inventory { get; private set; } = new List<InventoryItem>();
 
-    [Header("Prefabs")]
-    [SerializeField]
-    GameObject droppedItemPrefab;
-
-    [Header("Audio Clips")]
-    [SerializeField]
-    AudioClip pickUpItemAudio;
-    [SerializeField]
-    AudioClip dropItemAudio;
-
-    [Header("State")]
-    [SerializeField]
-    SerializedDictionary<string, Item> inventory = new();
-
-    public void OnTriggerEnter(Collider other)
+    void Awake()
     {
-        if (other.CompareTag("DroppedItem"))
+        if (Instance != null && Instance != this)
         {
-            var droppedItem = other.GetComponent<DropItem>();
-            if (droppedItem.pickedUp)
-            {
-                return;
-            }
-            droppedItem.pickedUp = true;
-            AddItem(droppedItem.item);
-            Destroy(other.gameObject);
-            audioSource.PlayOneShot(pickUpItemAudio);
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
         }
     }
 
-    void AddItem(Item item)
+    public class InventoryItem
     {
-        var inventoryId = Guid.NewGuid().ToString();
-        inventory.Add(inventoryId, item);
-        ui.AddUIItem(inventoryId, item);
+        public ItemData data { get; private set; }
+        public int stackSize { get; private set; }
+
+        public InventoryItem(ItemData source)
+        {
+            data = source;
+        }
+
     }
 
-    public void DropItem(string inventoryId)
+    public void AddItem(ItemData referenceData)
     {
-        var droppedItem = Instantiate(droppedItemPrefab, transform.position, Quaternion.identity).GetComponent<DropItem>();
-        var item = inventory.GetValueOrDefault(inventoryId);
-        droppedItem.Initialize(item);
-        inventory.Remove(inventoryId);
-        ui.RemoveUIItem(inventoryId);
-        audioSource.PlayOneShot(dropItemAudio);
+        InventoryItem newItem = new InventoryItem(referenceData);
+        inventory.Add(newItem);
+        m_itemDictionary.Add(referenceData, newItem);
+    }
+
+    public void DropItem(ItemData referenceData)
+    {
+        if (m_itemDictionary.TryGetValue(referenceData, out InventoryItem value))
+        {
+            if (value.stackSize == 0)
+            {
+                inventory.Remove(value);
+                m_itemDictionary.Remove(referenceData);
+            }
+        }
+    }
+
+    public InventoryItem Get(ItemData referenceData)
+    {
+        if (m_itemDictionary.TryGetValue(referenceData, out InventoryItem value))
+        {
+            return value;
+        }
+        return null;
+    }
+
+    [Serializable]
+    public struct ItemRequirement
+    {
+        public ItemData itemData;
+        public int amount;
+
+        public bool HasRequirement()
+        {
+            InventoryItem item = Inventory.Instance.Get(itemData);
+
+            if (item == null || item.stackSize < amount) { return false; }
+
+            return true;
+        }
     }
 }
