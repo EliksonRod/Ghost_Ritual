@@ -10,15 +10,12 @@ public class Flashlight : MonoBehaviour
     bool blacklightOn = false; // Track the state of the blacklight
 
     ControllerForPlayer PlayerController; // Reference to the player's controller script
-    InputForPlayer playerInput; // Reference to the player's input script
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         //PlayerController = ControllerForPlayer.Instance; // Get the instance of the InputForPlayer script
-        //PlayerInput = InputForPlayer.Instance; // Get the instance of the ControllerForPlayer script
         PlayerController = GetComponent<ControllerForPlayer>(); // Get the instance of the InputForPlayer script\
-        playerInput = GetComponent<InputForPlayer>();
     }
 
     void Update()

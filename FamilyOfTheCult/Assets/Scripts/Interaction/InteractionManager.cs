@@ -46,8 +46,8 @@ public class InteractionManager : MonoBehaviour
 
     private void Start()
     {
-       // _input = FindAnyObjectByType<InputForPlayer>();
-       _input = GetComponent<InputForPlayer>();
+        // _input = FindAnyObjectByType<InputForPlayer>();
+        _input = GetComponentInParent<InputForPlayer>();
 
         showHighlight = true;
         sendRaycast = true;
